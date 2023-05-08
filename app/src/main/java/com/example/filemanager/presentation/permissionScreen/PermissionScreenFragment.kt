@@ -2,7 +2,6 @@ package com.example.filemanager.presentation.permissionScreen
 
 import android.content.pm.PackageManager
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,7 +61,6 @@ class PermissionScreenFragment : Fragment() {
         requestCode: Int, permissions: Array<String?>,
         grantResults: IntArray
     ) {
-        Log.d("SOME", requestCode.toString())
         if (requestCode == PERMISSION_STORAGE) {
             if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 viewModel.allowPermission()
