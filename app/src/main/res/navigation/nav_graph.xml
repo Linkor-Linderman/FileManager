@@ -1,6 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <navigation xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:id="@+id/nav_graph">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/permissionScreenFragment">
 
+    <fragment
+        android:id="@+id/permissionScreenFragment"
+        android:name="com.example.filemanager.presentation.permissionScreen.PermissionScreenFragment"
+        android:label="fragment_permission_screen"
+        tools:layout="@layout/fragment_permission_screen" >
+        <action
+            android:id="@+id/action_permissionScreenFragment_to_mainScreenFragment"
+            app:destination="@id/mainScreenFragment"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/mainScreenFragment"
+        android:name="com.example.filemanager.presentation.mainScreen.MainScreenFragment"
+        android:label="fragment_main_screen"
+        tools:layout="@layout/fragment_main_screen" />
 </navigation>
