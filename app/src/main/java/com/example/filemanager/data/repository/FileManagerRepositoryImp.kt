@@ -1,19 +1,19 @@
 package com.example.filemanager.data.repository
 
-import android.content.Context
 import android.os.Environment
+import com.example.filemanager.common.Constants
+import com.example.filemanager.common.SharedPref
 import com.example.filemanager.data.dataSource.FileDao
 import com.example.filemanager.domain.model.FileEntity
 import com.example.filemanager.domain.repository.FileManagerRepository
-import dagger.hilt.android.qualifiers.ApplicationContext
 import java.io.File
 import java.security.MessageDigest
 import javax.inject.Inject
 
 
 class FileManagerRepositoryImp @Inject constructor(
-    @ApplicationContext context: Context,
-    private val fileDao: FileDao
+    private val fileDao: FileDao,
+    private val sharedPref: SharedPref
 ) : FileManagerRepository {
     override suspend fun getFilesByDirectoryName(name: String): List<File> {
         val path = Environment.getExternalStorageDirectory().toString() + "/" + name
@@ -24,28 +24,52 @@ class FileManagerRepositoryImp @Inject constructor(
 
     override suspend fun getLastChangeFiles(): List<File> {
         val rootFiles = getFilesByDirectoryName("")
+        val currentTimeLaunch: Long =
+            sharedPref.getLong(Constants.LAST_TIME_LAUNCH) ?: System.currentTimeMillis()
         val allFiles = mutableListOf<File>()
-        rootFiles.forEach {
-            if (it.isDirectory) {
-                allFiles.addAll(getAllFiles(it))
-            } else {
-                allFiles.add(it)
-            }
-        }
-        val result: MutableList<File> = mutableListOf()
-        for (file in allFiles) {
-            val dbFile = fileDao.getFileByPath(file.path)
-            if (dbFile != null) {
-                if (calculateFileHash(file) != dbFile.hash) {
-                    result.add(file)
-                    fileDao.insertFile(FileEntity(file.path, calculateFileHash(file)))
+        val currentTimeModifiedFiles = fileDao.getFileByLastAppLaunchTime(currentTimeLaunch)
+        if (currentTimeModifiedFiles.isNotEmpty()) {
+            return currentTimeModifiedFiles.map { File(it.path) }
+        } else {
+
+            rootFiles.forEach {
+                if (it.isDirectory) {
+                    allFiles.addAll(getAllFiles(it))
+                } else {
+                    allFiles.add(it)
                 }
-            } else {
-                result.add(file)
-                fileDao.insertFile(FileEntity(file.path, calculateFileHash(file)))
             }
+            val result: MutableList<File> = mutableListOf()
+            for (file in allFiles) {
+                val dbFile = fileDao.getFileByPath(file.path)
+                if (dbFile != null) {
+                    if (calculateFileHash(file) != dbFile.hash) {
+                        result.add(file)
+                        fileDao.insertFile(
+                            FileEntity(
+                                file.path,
+                                calculateFileHash(file),
+                                currentTimeLaunch
+                            )
+                        )
+                    } else {
+                        if (dbFile.lastAppLaunchTime == currentTimeLaunch) {
+                            result.add(File(dbFile.path))
+                        }
+                    }
+                } else {
+                    result.add(file)
+                    fileDao.insertFile(
+                        FileEntity(
+                            file.path,
+                            calculateFileHash(file),
+                            currentTimeLaunch
+                        )
+                    )
+                }
+            }
+            return result.toList()
         }
-        return result.toList()
     }
 
     private fun getAllFiles(directory: File): List<File> {

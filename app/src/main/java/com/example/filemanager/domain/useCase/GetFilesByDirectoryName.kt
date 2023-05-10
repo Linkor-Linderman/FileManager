@@ -12,6 +12,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
 import java.io.File
+import java.util.*
 import javax.inject.Inject
 
 class GetFilesByDirectoryName @Inject constructor(
@@ -32,7 +33,11 @@ class GetFilesByDirectoryName @Inject constructor(
                         when (fileOrder) {
                             is FileOrder.DateOfCreation -> listOfFileModel.sortedBy { it.file.lastModified() }
                             is FileOrder.FileExtension -> listOfFileModel.sortedBy { it.file.extension }
-                            is FileOrder.Name -> listOfFileModel.sortedBy { it.file.nameWithoutExtension }
+                            is FileOrder.Name -> listOfFileModel.sortedBy {
+                                it.file.nameWithoutExtension.lowercase(
+                                    Locale.ROOT
+                                )
+                            }
                             is FileOrder.Size -> listOfFileModel.sortedBy { it.fileSize }
                         }
                     }
@@ -40,7 +45,11 @@ class GetFilesByDirectoryName @Inject constructor(
                         when (fileOrder) {
                             is FileOrder.DateOfCreation -> listOfFileModel.sortedByDescending { it.file.lastModified() }
                             is FileOrder.FileExtension -> listOfFileModel.sortedByDescending { it.file.extension }
-                            is FileOrder.Name -> listOfFileModel.sortedByDescending { it.file.nameWithoutExtension }
+                            is FileOrder.Name -> listOfFileModel.sortedByDescending {
+                                it.file.nameWithoutExtension.lowercase(
+                                    Locale.ROOT
+                                )
+                            }
                             is FileOrder.Size -> listOfFileModel.sortedByDescending { it.fileSize }
                         }
                     }
@@ -57,7 +66,7 @@ class GetFilesByDirectoryName @Inject constructor(
         return if (file.isDirectory) {
             FileModel(file, getDirectorySize(file))
         } else {
-            FileModel(file, null)
+            FileModel(file, file.length())
         }
     }
 

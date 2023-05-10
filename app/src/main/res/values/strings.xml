@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">FileManager</string>
-    <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="header_for_permission_screen"><b>Dear User</b>,\nTo provide the best experience, our app needs certain permissions. Granting them ensures full functionality and improved usability. Your trust is important, and we use permissions responsibly.</string>
     <string name="allow">allow</string>
     <string name="name">Name</string>
@@ -16,4 +15,5 @@
     <string name="kb">kb</string>
     <string name="bytes">bytes</string>
     <string name="something_went_wrong">Something went wrong</string>
+    <string name="last_modified_files">Last Modified Files</string>
 </resources>

@@ -11,6 +11,9 @@ interface FileDao {
     @Query("SELECT * FROM files WHERE path = :path")
     fun getFileByPath(path: String): FileEntity?
 
+    @Query("SELECT * FROM files WHERE lastAppLaunchTime= :time")
+    fun getFileByLastAppLaunchTime(time: Long): List<FileEntity>
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertFile(file: FileEntity)
 

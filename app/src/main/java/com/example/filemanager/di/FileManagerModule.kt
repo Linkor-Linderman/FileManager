@@ -1,8 +1,8 @@
 package com.example.filemanager.di
 
 import android.app.Application
-import android.content.Context
 import androidx.room.Room
+import com.example.filemanager.common.SharedPref
 import com.example.filemanager.common.StringResourcesManager
 import com.example.filemanager.data.dataSource.FileDatabase
 import com.example.filemanager.data.repository.FileManagerRepositoryImp
@@ -10,10 +10,10 @@ import com.example.filemanager.domain.repository.FileManagerRepository
 import com.example.filemanager.domain.useCase.FileManagerUseCases
 import com.example.filemanager.domain.useCase.GetFilesByDirectoryName
 import com.example.filemanager.domain.useCase.GetLastChangeFiles
+import com.example.filemanager.domain.useCase.SortFileModels
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -33,10 +33,10 @@ object FileManagerModule {
     @Provides
     @Singleton
     fun provideRepository(
-        @ApplicationContext appContext: Context,
-        db: FileDatabase
+        db: FileDatabase,
+        sharedPref: SharedPref
     ): FileManagerRepository {
-        return FileManagerRepositoryImp(appContext, db.fileDao)
+        return FileManagerRepositoryImp(db.fileDao, sharedPref)
     }
 
     @Provides
@@ -47,7 +47,8 @@ object FileManagerModule {
     ): FileManagerUseCases {
         return FileManagerUseCases(
             getFilesByDirectoryName = GetFilesByDirectoryName(repository, stringResourcesManager),
-            getLastChangeFiles = GetLastChangeFiles(repository, stringResourcesManager)
+            getLastChangeFiles = GetLastChangeFiles(repository, stringResourcesManager),
+            sortFileModels = SortFileModels(stringResourcesManager)
         )
     }
 }

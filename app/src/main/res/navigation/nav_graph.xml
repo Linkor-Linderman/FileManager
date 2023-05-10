@@ -13,6 +13,7 @@
         <action
             android:id="@+id/action_permissionScreenFragment_to_mainScreenFragment"
             app:destination="@id/mainScreenFragment"
+            app:popUpTo="@id/mainScreenFragment"
             app:popUpToInclusive="true" />
     </fragment>
     <fragment
@@ -23,6 +24,11 @@
         <action
             android:id="@+id/action_mainScreenFragment_to_lastModifiedScreenFragment"
             app:destination="@id/lastModifiedScreenFragment" />
+        <action
+            android:id="@+id/action_mainScreenFragment_to_permissionScreenFragment"
+            app:destination="@id/permissionScreenFragment"
+            app:popUpTo="@id/permissionScreenFragment"
+            app:popUpToInclusive="true" />
     </fragment>
     <fragment
         android:id="@+id/lastModifiedScreenFragment"

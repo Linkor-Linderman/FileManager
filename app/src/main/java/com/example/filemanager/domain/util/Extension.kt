@@ -13,4 +13,5 @@ sealed class Extension(
     object Epub : Extension("epub", R.drawable.epub_icon)
     object Mp3 : Extension("mp3", R.drawable.mp3_icon)
     object Mp4 : Extension("mp4", R.drawable.mp4_icon)
+    object Zip : Extension("zip", R.drawable.zip_icon)
 }

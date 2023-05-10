@@ -1,6 +1,5 @@
 package com.example.filemanager.presentation.mainScreen
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,6 +11,8 @@ import com.example.filemanager.domain.util.Extension
 import java.io.File
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.math.log10
+import kotlin.math.pow
 
 class FileListAdapter(
     private val onDirectoryClick: (path: String) -> Unit,
@@ -42,7 +43,7 @@ class FileListAdapter(
             holder.binding.shareButton.setOnClickListener {
                 onShareButtonClick(file)
             }
-            holder.binding.size.text = getFileSize(fileSizeInBytes)
+            holder.binding.size.text = getFormattedFileSize(fileSizeInBytes)
             holder.binding.root.setOnClickListener {
                 onFileClick(file)
             }
@@ -62,16 +63,21 @@ class FileListAdapter(
                 Extension.Mp3.name -> {
                     holder.binding.fileIcon.setImageResource(Extension.Mp3.iconId)
                 }
+                Extension.Epub.name -> {
+                    holder.binding.fileIcon.setImageResource(Extension.Epub.iconId)
+                }
                 Extension.Mp4.name -> {
-                    holder.binding.fileIcon.setImageResource(Extension.Mp3.iconId)
+                    holder.binding.fileIcon.setImageResource(Extension.Mp4.iconId)
+                }
+                Extension.Zip.name -> {
+                    holder.binding.fileIcon.setImageResource(Extension.Zip.iconId)
                 }
             }
         } else {
             holder.binding.shareButton.visibility = View.GONE
-            holder.binding.size.text = getFileSize(fileSize!!)
+            holder.binding.size.text = getFormattedFileSize(fileSize!!)
             holder.binding.fileIcon.setImageResource(R.drawable.folder_icon)
             holder.binding.root.setOnClickListener {
-                Log.d("SOME", file.path.toString())
                 onDirectoryClick(file.name)
             }
         }
@@ -83,7 +89,7 @@ class FileListAdapter(
 
     private fun getDateTime(time: Long): String? {
         return try {
-            val sdf = SimpleDateFormat("MM/dd/yyyy")
+            val sdf = SimpleDateFormat("dd.MM.yyyy")
             val netDate = Date(time)
             sdf.format(netDate)
         } catch (e: Exception) {
@@ -91,19 +97,14 @@ class FileListAdapter(
         }
     }
 
-    private fun getFileSize(fileSizeInBytes: Long): String {
-        val fileSizeInKB = fileSizeInBytes / 1024
-        val fileSizeInMB = fileSizeInKB / 1024
-        val fileSizeInGb = fileSizeInMB / 1024
-        return if (fileSizeInGb >= 1.toLong()) {
-            return "$fileSizeInMB gb"
-        } else if (fileSizeInMB >= 1.toLong()) {
-            return "$fileSizeInMB mb"
-        } else if (fileSizeInKB >= 1.toLong()) {
-            "$fileSizeInKB kb"
-        } else {
-            "$fileSizeInBytes bytes"
-        }
+
+    private fun getFormattedFileSize(size: Long): String {
+        if (size <= 0) return "0 B"
+
+        val units = arrayOf("B", "KB", "MB", "GB", "TB")
+        val digitGroups = (log10(size.toDouble()) / log10(1024.0)).toInt()
+
+        return "%.1f %s".format(size / 1024.0.pow(digitGroups.toDouble()), units[digitGroups])
     }
 
     fun submitList(newData: List<FileModel>) {

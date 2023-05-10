@@ -14,6 +14,7 @@ import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.filemanager.R
+import com.example.filemanager.common.PermissionUtils
 import com.example.filemanager.databinding.FragmentMainScreenBinding
 import com.example.filemanager.domain.util.FileOrder
 import com.example.filemanager.domain.util.OrderType
@@ -31,6 +32,9 @@ class MainScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        if (!PermissionUtils.hasPermissions(requireContext())) {
+            findNavController().navigate(R.id.action_mainScreenFragment_to_permissionScreenFragment)
+        }
         _binding = FragmentMainScreenBinding.inflate(layoutInflater)
         return binding.root
     }
