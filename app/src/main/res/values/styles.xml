@@ -11,4 +11,14 @@
         <item name="android:textSize">32sp</item>
         <item name="android:fontFamily">@font/vk_sans_display_medium</item>
     </style>
+    <style name="ItemHeadingText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/vk_sans_display_demi_bold</item>
+    </style>
+    <style name="ItemBodyText" parent="Widget.AppCompat.TextView">
+        <item name="android:textColor">@color/black</item>
+        <item name="android:textSize">14sp</item>
+        <item name="android:fontFamily">@font/vk_sans_display_regular</item>
+    </style>
 </resources>

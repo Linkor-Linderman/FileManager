@@ -15,8 +15,8 @@ import com.example.filemanager.databinding.FragmentPermissionScreenBinding
 
 
 class PermissionScreenFragment : Fragment() {
-
-    private lateinit var binding: FragmentPermissionScreenBinding
+    private var _binding: FragmentPermissionScreenBinding? = null
+    private val binding get() = _binding!!
     private val viewModel: PermissionScreenViewModel by viewModels()
     private lateinit var permissionUtils: PermissionUtils
 
@@ -32,7 +32,7 @@ class PermissionScreenFragment : Fragment() {
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        binding = FragmentPermissionScreenBinding.inflate(layoutInflater, container, false)
+        _binding = FragmentPermissionScreenBinding.inflate(layoutInflater, container, false)
         return binding.root
     }
 
@@ -54,6 +54,11 @@ class PermissionScreenFragment : Fragment() {
                 findNavController().navigate(R.id.action_permissionScreenFragment_to_mainScreenFragment)
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     @Deprecated("Deprecated in Java")

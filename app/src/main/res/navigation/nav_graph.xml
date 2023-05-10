@@ -19,5 +19,14 @@
         android:id="@+id/mainScreenFragment"
         android:name="com.example.filemanager.presentation.mainScreen.MainScreenFragment"
         android:label="fragment_main_screen"
-        tools:layout="@layout/fragment_main_screen" />
+        tools:layout="@layout/fragment_main_screen" >
+        <action
+            android:id="@+id/action_mainScreenFragment_to_lastModifiedScreenFragment"
+            app:destination="@id/lastModifiedScreenFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/lastModifiedScreenFragment"
+        android:name="com.example.filemanager.presentation.lastModifiedScreen.LastModifiedScreenFragment"
+        android:label="fragment_last_modified_screen"
+        tools:layout="@layout/fragment_last_modified_screen" />
 </navigation>
